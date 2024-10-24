@@ -208,14 +208,8 @@ Once the collectors have run successfully, you can collect the forensic data fro
 ## 9. Clean-Up Phase
 After the collection process is complete, it is recommended to clean up unnecessary files left on the hosts. This includes deleting the forensic collection directory and any binaries deployed during the process.
 
-### Steps:
-1. **Delete Collection Directory on the Host:**
-   You can use Real-Time Response to delete the forensic collection directory `C:\triage_output\` and its contents from each host.
-   ```powershell
-   Invoke-FalconCommand -HostId "host-id" -Command 'rmdir /S /Q C:\triage_output'
-
-1. **Delete Binary Pulled from the Cloud:** 
-   If you deployed a binary from the CrowdStrike cloud to the host, you should also remove it from the C:\Windows\Temp\ or other directories where it was deployed.
-   ```powershell
-   Invoke-FalconCommand -HostId "host-id" -Command 'del C:\Windows\Temp\file.exe'
-   ```
+**Delete Collection Directory on the Host:**
+You can use Real-Time Response to delete the forensic collection directory `C:\triage_output\` and its contents from each host.
+```powershell
+$confirmedFiles | ForEach-Object { Invoke-FalconAdminCommand -Command 'rm' -Argument '-r C:\triage_output' -SessionId $_.session_id -Timeout 600 -QueueOffline $true}
+```
